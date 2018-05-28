@@ -20,6 +20,15 @@ ON_LOAD = sublime_plugin.all_callbacks['on_load']
 def get_shell_args(args):
     return ' '.join(args)
 
+def get_dub_path():
+    global plugin_settings
+    plugin_settings = sublime.load_settings('DKit.sublime-settings')
+
+    dub_path = read_settings('dub_path', '')
+    dub_exe = os.path.join(dub_path, 'dub' + ('.exe' if sys.platform == 'win32' else ''))
+    return dub_exe
+
+
 def read_settings(key, default):
     global plugin_settings
     if plugin_settings is None:
@@ -159,7 +168,7 @@ def start_server():
     return True
 
 def update_project(view, package_file):
-    dub = Popen(get_shell_args(['dub', 'describe']), stdin=PIPE, stdout=PIPE, shell=True, cwd=os.path.dirname(package_file))
+    dub = Popen(get_shell_args([get_dub_path(), 'describe']), stdin=PIPE, stdout=PIPE, shell=True, cwd=os.path.dirname(package_file))
     description = dub.communicate()
     description = description[0].decode('utf-8')
 
@@ -410,7 +419,7 @@ class DcdShowDocumentationCommand(sublime_plugin.TextCommand):
 class DubListInstalledCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         try:
-            dub = Popen(get_shell_args(['dub', 'list']), stdin=PIPE, stdout=PIPE, shell=True)
+            dub = Popen(get_shell_args([get_dub_path(), 'list']), stdin=PIPE, stdout=PIPE, shell=True)
             output = dub.communicate()
             output = output[0].splitlines()
             del output[0]

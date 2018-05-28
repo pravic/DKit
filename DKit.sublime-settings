@@ -1,6 +1,8 @@
 {
   // Path to the directory containing both dcd-client and dcd-server executables
   "dcd_path": "/setup/my/path",
+  // Path to the directory containing the dub executable (leave empty to use DUB from the $PATH)
+  "dub_path": "",
   // Port to use for DCD client and server
   "dcd_port": 9166,
   // Include path for existing source files.
